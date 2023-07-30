@@ -1,13 +1,3 @@
-CREATE TABLE audit_logs (
-    id SERIAL PRIMARY KEY,
-    table_name TEXT NOT NULL,
-    row_id TEXT NOT NULL,
-    operation TEXT NOT NULL,
-    changes TEXT,
-    executed_by TEXT NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE OR REPLACE FUNCTION audit_trigger_func() RETURNS TRIGGER AS $audit_trigger_func$
 DECLARE
     v_old_data JSONB;
@@ -46,7 +36,3 @@ BEGIN
     RETURN NEW;
 END;
 $audit_trigger_func$ LANGUAGE plpgsql;
-
-CREATE TRIGGER audit_trigger
-AFTER INSERT OR UPDATE OR DELETE ON my_table
-FOR EACH ROW EXECUTE PROCEDURE audit_trigger_func();
