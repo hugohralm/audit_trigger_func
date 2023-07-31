@@ -1,39 +1,41 @@
-# Script de Auditoria PostgreSQL
+# PostgreSQL Auditing Script
 
-Este projeto consiste em um script de auditoria para PostgreSQL que armazena todas as alterações feitas em qualquer tabela do banco de dados. Ele é útil para rastrear atividades de Insert, Update e Delete, juntamente com informações de quem executou a ação.
+This project consists of an auditing script for PostgreSQL that logs all changes made to any table in the database. It is useful for tracking Insert, Update, and Delete activities, along with information about who performed the operation.
 
-## Configuração
+## Setup
 
-1. **Criação da tabela de auditoria:**
+1. **Creating the audit table:**
 
-   Primeiro, criamos uma tabela chamada `audit_logs` onde armazenaremos todos os logs de auditoria. Ela tem as seguintes colunas:
+   First, we create a table called `audit_logs` where we will store all audit logs. It has the following columns:
 
-   - `id`: uma chave primária autoincrementável.
-   - `table_name`: o nome da tabela onde a operação foi realizada.
-   - `row_id`: o ID da linha que foi alterada.
-   - `operation`: o tipo de operação (INSERT, UPDATE, DELETE).
-   - `changes`: um campo de texto que armazena um objeto JSON com as alterações. Para operações de UPDATE, ele contém o valor antigo e o novo valor de cada campo alterado.
-   - `executed_by`: o usuário que executou a operação.
-   - `updated_at`: a data e hora em que a operação foi realizada.
+   - `id`: An auto-incrementing primary key.
+   - `table_name`: The name of the table where the operation was performed.
+   - `row_id`: The ID of the row that was altered.
+   - `operation`: The type of operation (INSERT, UPDATE, DELETE).
+   - `changes`: A text field that stores a JSON object with the changes. For UPDATE operations, it contains the old and new value of each altered field.
+   - `executed_by`: The user who executed the operation.
+   - `updated_at`: The date and time the operation was performed.
 
-2. **Criação da função de gatilho:**
+2. **Creating the trigger function:**
 
-   A função `audit_trigger_func` é chamada sempre que uma operação de INSERT, UPDATE ou DELETE é realizada em uma tabela. Esta função coleta informações sobre a operação e insere um registro na tabela `audit_logs`.
+   The `audit_trigger_func` function is invoked whenever an INSERT, UPDATE, or DELETE operation is performed on a table. This function collects information about the operation and inserts a record into the `audit_logs` table.
 
-   - Para operações de UPDATE, a função compara o valor antigo e o novo valor de cada campo. Se um campo foi alterado, a função armazena o valor antigo e o novo valor na coluna `changes`.
-   - Para operações de DELETE, a função armazena todos os valores da linha que foi excluída na coluna `changes`.
-   - Para operações de INSERT, a função armazena todos os valores da nova linha na coluna `changes`.
+   - For UPDATE operations, the function compares the old and new value of each field. If a field was changed, the function stores the old and new values in the `changes` column.
+   - For DELETE operations, the function stores all values of the row that was deleted in the `changes` column.
+   - For INSERT operations, the function stores all values of the new row in the `changes` column.
 
-3. **Criação do gatilho:**
+3. **Creating the trigger:**
 
-   Finalmente, criamos um gatilho `audit_trigger` que chama a função `audit_trigger_func` sempre que uma operação de INSERT, UPDATE ou DELETE é realizada em uma tabela.
+   Finally, we create a trigger named `audit_trigger` that calls the `audit_trigger_func` function whenever an INSERT, UPDATE, or DELETE operation is performed on a table.
 
-   Observe que este gatilho é definido para uma tabela específica (`my_table` neste exemplo). Se você quiser rastrear operações em várias tabelas, precisará criar um gatilho para cada uma.
+   Note that this trigger is defined for a specific table (in this example, `my_table`). If you want to track operations on multiple tables, you will need to create a trigger for each one.
 
-## Como usar
+## How to Use
 
-Após a configuração, o sistema de auditoria funcionará automaticamente. Sempre que uma operação de INSERT, UPDATE ou DELETE for realizada em uma tabela monitorada, um novo registro será inserido na tabela `audit_logs`.
+After setup, the auditing system will operate automatically. Whenever an INSERT, UPDATE, or DELETE operation is performed on a monitored table, a new record will be inserted into the `audit_logs` table.
 
-Você pode consultar a tabela `audit_logs` a qualquer momento para ver o histórico de operações.
+You can query the `audit_logs` table at any time to see the history of operations.
 
-Por favor, note que este sistema de auditoria assume que todas as suas tabelas têm um campo 'id'. Se não for o caso, você precisará ajustar o script de acordo.
+## Contributing
+
+Contributions to the project are always welcome. If you've found a bug or have an idea for a new feature, feel free to open an issue or a pull request.
