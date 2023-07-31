@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS hstore;
 
-CREATE OR REPLACE FUNCTION audit_insert_null_trigger_func() RETURNS TRIGGER AS $audit_trigger_func$
+CREATE OR REPLACE FUNCTION audit_insert_null_trigger_func() RETURNS TRIGGER AS $audit_insert_null_trigger_func$
 DECLARE
     v_old_data JSONB;
     v_new_data JSONB;
@@ -46,4 +46,4 @@ BEGIN
 
     RETURN NEW;
 END;
-$audit_trigger_func$ LANGUAGE plpgsql;
+$audit_insert_null_trigger_func$ LANGUAGE plpgsql;
