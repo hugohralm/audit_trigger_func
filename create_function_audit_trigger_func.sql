@@ -26,12 +26,18 @@ BEGIN
             v_result := to_jsonb(NEW);
         END IF;
     ELSIF (TG_OP = 'DELETE') THEN
-    	v_row_id := CASE WHEN hstore(OLD) ? 'id' THEN OLD.id::text ELSE NULL END;
-    
+    	IF hstore(OLD) ? 'id' THEN
+            v_row_id := OLD.id::text;
+        ELSE
+            v_row_id := NULL;
+        END IF;
         v_result := to_jsonb(OLD);
     ELSIF (TG_OP = 'INSERT') THEN
-    	v_row_id := CASE WHEN hstore(NEW) ? 'id' THEN NEW.id::text ELSE NULL END;
-    
+    	IF hstore(NEW) ? 'id' THEN
+            v_row_id := NEW.id::text;
+        ELSE
+            v_row_id := NULL;
+        END IF;
         v_result := to_jsonb(NEW);
     END IF;
 
