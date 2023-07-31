@@ -3,7 +3,7 @@ CREATE TABLE audit_logs (
     table_name TEXT NOT NULL,
     row_id TEXT NULL,
     operation TEXT NOT NULL,
-    changes TEXT,
+    changes JSONB,
     executed_by TEXT NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
