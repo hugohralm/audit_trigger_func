@@ -22,7 +22,7 @@ BEGIN
                 END IF;
             END LOOP;
         ELSE
-        	v_row_id := NULL;
+            v_row_id := NULL;
             v_result := to_jsonb(NEW);
         END IF;
     ELSIF (TG_OP = 'DELETE') THEN
@@ -41,11 +41,12 @@ BEGIN
         v_result := to_jsonb(NEW);
     END IF;
 
-    -- Insira v_result na tabela de auditoria
-    -- Insert v_result into the audit table
-    INSERT INTO audit_logs (table_name, row_id, operation, changes, executed_by) 
-    VALUES (TG_TABLE_NAME, v_row_id, TG_OP, v_result::text, current_user);
-   
+    -- Insert v_result into the audit table only if a change was made
+    IF v_result <> '{}'::JSONB THEN
+        INSERT INTO audit_logs (table_name, row_id, operation, changes, executed_by) 
+        VALUES (TG_TABLE_NAME, v_row_id, TG_OP, v_result, current_user);
+    END IF;
+
     RETURN NEW;
 END;
 $audit_trigger_func$ LANGUAGE plpgsql;
