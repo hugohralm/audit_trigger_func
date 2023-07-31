@@ -1,21 +1,21 @@
 CREATE EXTENSION IF NOT EXISTS hstore;
 
-CREATE OR REPLACE FUNCTION audit_trigger_func() RETURNS TRIGGER AS $audit_trigger_func$
+CREATE OR REPLACE FUNCTION audit_insert_null_trigger_func() RETURNS TRIGGER AS $audit_trigger_func$
 DECLARE
     v_old_data JSONB;
     v_new_data JSONB;
     v_result JSONB := '{}'::JSONB;
     v_key TEXT;
     v_row_id TEXT := NULL;
-begin
-	IF (TG_OP = 'INSERT') THEN
+BEGIN
+    IF (TG_OP = 'INSERT') THEN
     	IF hstore(NEW) ? 'id' THEN
             v_row_id := NEW.id::text;
             v_result := NULL;
         ELSE
             v_result := to_jsonb(NEW);
         END IF;
-    ELSEIF (TG_OP = 'DELETE') THEN
+    ELSIF (TG_OP = 'DELETE') THEN
         v_result := to_jsonb(OLD);
         IF hstore(OLD) ? 'id' THEN
             v_row_id := OLD.id::text;
